@@ -52,7 +52,7 @@ const Game = () => {
   useEffect(() => {
     const winner = calculateWinner(state.squares);
     if (winner && !winnerToastId) {
-      const toastId = toast.success(`Winner: ${winner}`, {
+      toast.success(`Winner: ${winner}`, {
         duration: 5000,
         position: 'bottom-center',
         style: {
@@ -60,7 +60,7 @@ const Game = () => {
         },
         onDismiss: handleToastDismiss,
       });
-      setWinnerToastId(toastId);
+      // setWinnerToastId(toastId);
       const timer = setTimeout(() => {
         resetGame();
       }, 5000);
