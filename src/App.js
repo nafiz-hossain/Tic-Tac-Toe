@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import './styles.css';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
+import Stack from '@mui/material/Stack';
 
 const INITIAL_STATE = {
   squares: Array(9).fill(null),
@@ -28,10 +31,6 @@ const calculateWinner = (squares) => {
   return null;
 };
 
-const isBoardFull = (squares) => {
-  return squares.every((square) => square !== null);
-};
-
 const Square = ({ value, onClick }) => (
   <button className="square" onClick={onClick}>
     {value}
@@ -53,63 +52,55 @@ const Game = () => {
   useEffect(() => {
     const winner = calculateWinner(state.squares);
     if (winner && !winnerToastId) {
-      toast.success(`Winner: ${winner}`, {
-        duration: 3000,
+      const toastId = toast.success(`Winner: ${winner}`, {
+        duration: 5000,
         position: 'bottom-center',
         style: {
           padding: '10px',
         },
         onDismiss: handleToastDismiss,
       });
-      // setWinnerToastId(toastId);
+      setWinnerToastId(toastId);
       const timer = setTimeout(() => {
-
         resetGame();
-        console.log('Came to dismiss toast winner');
-
-      }, 3000);
+      }, 5000);
       return () => clearTimeout(timer);
-    } 
-    
-    else if (!winner && winnerToastId) {
+    } else if (!winner && winnerToastId) {
       toast.dismiss(winnerToastId);
       setWinnerToastId(null);
-
     } else if (isBoardFull(state.squares)) {
-      toast.error('Draw', {
-        duration: 3000,
+      const toastId = toast.error('Draw', {
+        duration: 5000,
         position: 'bottom-center',
-        style: {
-          padding: '10px',
-        },
         onDismiss: handleToastDismiss,
       });
       const timer = setTimeout(() => {
-        console.log('Came to dismiss toast draw');
         resetGame();
-      }, 3000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [state.squares, winnerToastId]);
 
-
-
   const handleClick = (i) => {
-    const squaresCopy = state.squares.slice();
-    if (calculateWinner(squaresCopy) || squaresCopy[i]) return;
-    squaresCopy[i] = state.xIsNext ? 'X' : 'O';
+    const squares = state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) return;
+    squares[i] = state.xIsNext ? 'X' : 'O';
     setState({
-      squares: squaresCopy,
+      squares: squares,
       xIsNext: !state.xIsNext,
     });
   };
 
-  const resetGame = () => {
-    setState(INITIAL_STATE);
+  const isBoardFull = (squares) => {
+    return squares.every((square) => square !== null);
   };
 
   const handleToastDismiss = () => {
     resetGame();
+  };
+
+  const resetGame = () => {
+    setState(INITIAL_STATE);
   };
 
   let status = `Next player: ${state.xIsNext ? 'X' : 'O'}`;
